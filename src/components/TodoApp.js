@@ -3,8 +3,7 @@ import Header from './Header';
 import Form from './Form';
 import Todo from './Todos';
 import CompletedTodos from './CompletedTodos';
-import "regenerator-runtime/runtime.js";
-
+import { v4 as uuidv4 } from 'uuid';
 
 class TodoApp extends React.Component {
 
@@ -13,12 +12,62 @@ class TodoApp extends React.Component {
     completedTodos: []
   }
 
+  setTodos = () => {
+    const todos = []
+    const completedTodos = []
+
+    fetch('http://localhost:8080/get')
+      .then(response => response.json())
+      .then(data => {
+        data.forEach(unparsedDatum => {
+          const datum = JSON.parse(unparsedDatum)
+
+          if (datum.isCompleted) {
+            completedTodos.push({
+              id: datum.id,
+              title: datum.title,
+              description: datum.description,
+              dueDate: datum.date,
+              completed: datum.isCompleted
+            })
+          } else {
+            todos.push({
+              id: datum.id,
+              title: datum.title,
+              description: datum.description,
+              dueDate: datum.date,
+              completed: datum.isCompleted
+            })
+          }
+        })
+      })
+      .then(() => {
+        this.setState(() => ({
+          todos,
+          completedTodos
+        }))
+      });
+  }
+
   handleAddTodo = (todo) => {
     if (!todo.title) {
       return 'Enter a title';
     } else if (this.state.todos.filter(stateTodo => todo.title === stateTodo.title).length > 0) {
       return 'A todo with this title already exists';
     }
+
+    fetch('http://localhost:8080/create', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        id: uuidv4(),
+        title: todo.title,
+        date: todo.dueDate,
+        description: todo.description
+      })
+    })
 
     this.setState((prevState) => ({ todos: prevState.todos.concat(todo) }));
   }
@@ -31,6 +80,22 @@ class TodoApp extends React.Component {
       return 'Please enter a valid title'
     }
 
+    const todo = this.state.todos.find(todo => todo.title === originalTitle)
+
+    fetch('http://localhost:8080/update', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        id: todo.id,
+        title: newTitle,
+        date: todo.dueDate,
+        description: todo.description,
+        isCompleted: false
+      })
+    })
+
     const todoIndex = this.state.todos.findIndex((stateTodo) => originalTitle === stateTodo.title);
     const updatedTodos = this.state.todos;
     updatedTodos[todoIndex].title = newTitle
@@ -39,6 +104,23 @@ class TodoApp extends React.Component {
   }
 
   handleCompleteTodo = (title) => {
+
+    const todo = this.state.todos.find(todo => todo.title === title)
+
+    fetch('http://localhost:8080/update', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        id: todo.id,
+        title: todo.title,
+        date: todo.dueDate,
+        description: todo.description,
+        isCompleted: true
+      })
+    })
+
     const updatedCompletedTodos = this.state.completedTodos;
     updatedCompletedTodos.push({ title: title })
     this.setState((prevState) => ({
@@ -49,47 +131,18 @@ class TodoApp extends React.Component {
     }));
   }
 
-  async componentDidMount() {
+  handleDeleteTodo = (title) =>{
 
-    const response = await fetch('http://localhost:8080/get', {
-      headers: {
-        'Access-Control-Allow-Origin': 'http://localhost:3000',
-        'Access-Control-Allow-Credentials': 'true'
-      }
-    })
+  }
 
-    console.log(response.json())
-
-    try {
-      const todosJson = localStorage.getItem('todos');
-      const completedTodosJson = localStorage.getItem('completedTodos');
-      const todos = JSON.parse(todosJson);
-      const completedTodos = JSON.parse(completedTodosJson);
-
-      if (todos) {
-        this.setState(() => ({
-          todos
-        }));
-      }
-      if (completedTodos) {
-        this.setState(() => ({
-          completedTodos
-        }));
-      }
-    } catch (error) {
-      //Do nothing
-    }
+  componentDidMount() {
+    this.setTodos()
   }
 
   componentDidUpdate(prevProps, prevState) {
     if (prevState.todos.length !== this.state.todos.length) {
-      const todosJson = JSON.stringify(this.state.todos);
-      localStorage.setItem('todos', todosJson);
-      console.log('todos updated');
+      this.setTodos()
     }
-    const completedTodosJson = JSON.stringify(this.state.completedTodos);
-    localStorage.setItem('completedTodos', completedTodosJson);
-    console.log('completed updated');
   }
 
   render() {
@@ -108,6 +161,7 @@ class TodoApp extends React.Component {
           />
           <CompletedTodos
             handleCompleteTodo={this.handleCompleteTodo}
+            handleDeleteTodo={this.handleDeleteTodo}
             completedTodos={this.state.completedTodos}
           />
         </div>
