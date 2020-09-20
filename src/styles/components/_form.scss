@@ -1,0 +1,32 @@
+.form {
+  display: flex;
+  justify-content: center;
+  margin: 0 auto;
+  // padding: $m-size;
+  font-size: $m-size;
+  font-weight: 500;
+  max-width: 100%;
+  padding-bottom: $xl-size;
+}
+
+.form input {
+  padding: $m-size;
+  border: none;
+  border-bottom: .3rem solid darken($pink, 10%);
+}
+
+.form button {
+  font-weight: bold;
+  background: $pink;
+  border: none;
+  border-bottom: .3rem solid darken($pink, 10%);
+  color: $eerie-black;
+  padding: $s-size;
+}
+
+.creation-error-message {
+  display: flex;
+  justify-content: center;
+  color: red;
+  font-weight: bold;
+}

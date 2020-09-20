@@ -1,0 +1,25 @@
+.todos {
+  color: $carolina-blue;
+}
+
+.todos__title {
+  color: $pink;
+}
+
+.todos__description {
+  display: flex;
+  max-width: 100%;
+  color: $blizzard-blue;
+}
+
+.todos__dueDate {
+  color: $blizzard-blue;
+}
+
+.todos button {
+    font-weight: bold;
+    background: $pink;
+    border: none;
+    border-bottom: .3rem solid darken($pink, 10%);
+    color: $eerie-black;
+}
