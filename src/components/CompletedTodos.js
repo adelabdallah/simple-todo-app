@@ -6,7 +6,18 @@ const CompletedTodos = (props) => {
       <h3>Completed Todos</h3>
       {
         props.completedTodos.map((todo, index) => {
-          return <p className='completed-todos__title' key={index}>{todo.title}</p>
+          return (
+            <React.Fragment key={index}>
+              <p className='completed-todos__title'>{todo.title}</p>
+              <button
+                onClick={(e) => {
+                  props.handleDeleteTodo(todo)
+                }}
+              >
+                Delete
+              </button>
+            </React.Fragment>
+          )
         })
       }
     </div>

@@ -5,3 +5,11 @@
 .completed-todos__title {
   color: $pink;
 }
+
+.completed-todos button {
+  font-weight: bold;
+  background: $pink;
+  border: none;
+  border-bottom: .3rem solid darken($pink, 10%);
+  color: $eerie-black;
+}

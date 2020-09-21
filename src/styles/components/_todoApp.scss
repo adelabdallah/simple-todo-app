@@ -1,0 +1,8 @@
+.search-bar {
+  font-size: $m-size;
+  font-weight: 500;
+  max-width: 100%;
+  padding: $s-size;
+  border: none;
+  border-bottom: .3rem solid darken($pink, 10%);
+}

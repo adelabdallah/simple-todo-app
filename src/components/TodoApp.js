@@ -9,7 +9,8 @@ class TodoApp extends React.Component {
 
   state = {
     todos: [],
-    completedTodos: []
+    completedTodos: [],
+    searchTerm: ''
   }
 
   setTodos = () => {
@@ -47,6 +48,17 @@ class TodoApp extends React.Component {
           completedTodos
         }))
       });
+  }
+
+  editSearchTerm = (e) => {
+    this.setState({ searchTerm: e.target.value })
+    console.log(this.state.searchTerm)
+  }
+
+  search = () => {
+    return this.state.todos
+      .filter(todo => todo.title.toLowerCase()
+        .includes(this.state.searchTerm.toLowerCase()))
   }
 
   handleAddTodo = (todo) => {
@@ -131,8 +143,13 @@ class TodoApp extends React.Component {
     }));
   }
 
-  handleDeleteTodo = (title) =>{
+  handleDeleteTodo = (todo) => {
+    fetch(`http://localhost:8080/delete?id=${todo.id}`, {
+      method: 'DELETE'
+    })
 
+    this.setState((prevState) =>
+      ({ completedTodos: prevState.completedTodos.filter(completedTodo => completedTodo.title !== todo.title) }));
   }
 
   componentDidMount() {
@@ -140,7 +157,10 @@ class TodoApp extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevState.todos.length !== this.state.todos.length) {
+    if (
+      prevState.todos.length !== this.state.todos.length ||
+      prevState.completedTodos.length !== this.state.completedTodos.length
+    ) {
       this.setTodos()
     }
   }
@@ -149,21 +169,29 @@ class TodoApp extends React.Component {
     return (
       <div>
         <Header />
-        <Form
-          handleAddTodo={this.handleAddTodo}
-        />
-        <div className='container'>
 
+        <div className='container'>
+          <Form
+            handleAddTodo={this.handleAddTodo}
+          />
+          <input
+            className='search-bar'
+            type='text'
+            value={this.state.searchTerm}
+            onChange={this.editSearchTerm}
+            placeholder='Search by title'
+          />
           <Todo
-            todos={this.state.todos}
+            todos={this.search()}
             handleEditTodo={this.handleEditTodo}
             handleCompleteTodo={this.handleCompleteTodo}
           />
-          <CompletedTodos
-            handleCompleteTodo={this.handleCompleteTodo}
-            handleDeleteTodo={this.handleDeleteTodo}
-            completedTodos={this.state.completedTodos}
-          />
+          {this.state.completedTodos.length &&
+            <CompletedTodos
+              handleCompleteTodo={this.handleCompleteTodo}
+              handleDeleteTodo={this.handleDeleteTodo}
+              completedTodos={this.state.completedTodos}
+            />}
         </div>
         {console.log(this.state.todos)}
         {console.log(this.state.completedTodos)}

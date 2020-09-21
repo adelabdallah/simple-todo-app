@@ -1,12 +1,9 @@
 .form {
   display: flex;
-  justify-content: center;
-  margin: 0 auto;
-  // padding: $m-size;
   font-size: $m-size;
   font-weight: 500;
   max-width: 100%;
-  padding-bottom: $xl-size;
+  padding-bottom: $s-size;
 }
 
 .form input {

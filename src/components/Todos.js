@@ -17,7 +17,7 @@ export default class Todos extends React.Component {
     return (
       <div className='todos'>
         <h3>{`You have ${this.props.todos.length} ${this.props.todos.length === 1 ? 'todo' : 'todos'} remaining`}</h3>
-        {this.state.error && <p className='edit-error-message'>{this.state.error}</p>}
+        {this.state.error && <p className='todos__error-message'>{this.state.error}</p>}
         {
           this.props.todos.map((todo, index) => {
             return (
