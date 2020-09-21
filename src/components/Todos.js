@@ -23,8 +23,8 @@ export default class Todos extends React.Component {
             return (
               <React.Fragment key={index}>
                 <b><p onClick={this.handleEditTodo} className='todos__title'>{todo.title}</p></b>
-                <p className='todos__description'>{todo.description}</p>
-                <p className='todos__dueDate'>Due by: {todo.dueDate ? todo.dueDate : "N/A"}</p>
+                {todo.description && <p className='todos__description'>{todo.description}</p>}
+                {todo.dueDate && <p className='todos__dueDate'>Due by: {todo.dueDate ? todo.dueDate : "N/A"}</p>}
                 <button
                   onClick={(e) => {
                     this.props.handleCompleteTodo(todo.title)

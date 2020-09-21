@@ -50,10 +50,9 @@ class TodoApp extends React.Component {
       });
   }
 
-  editSearchTerm = (e) => {
+  editSearchTerm = (e) =>
     this.setState({ searchTerm: e.target.value })
-    console.log(this.state.searchTerm)
-  }
+
 
   search = () => {
     return this.state.todos
@@ -193,8 +192,6 @@ class TodoApp extends React.Component {
               completedTodos={this.state.completedTodos}
             />}
         </div>
-        {console.log(this.state.todos)}
-        {console.log(this.state.completedTodos)}
       </div>
     )
   }
