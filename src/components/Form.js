@@ -34,7 +34,7 @@ export default class Form extends React.Component {
         <form className='form' onSubmit={this.handleAddTodo}>
           <input type='text' placeholder='Title' name='addTitle' />
           <input type='text' placeholder='Description' name='addDesc' />
-          <input type='text' placeholder='Date' name='addDate' />
+          <input type='date' name='addDate' />
           <button>Add Todo</button>
         </form>
       </div>
